@@ -1,5 +1,2 @@
-{ "open": { "baza": "stud", "login": "stud", "password": "d8578edf8458ce06fbc"}}
-{ "function1": { "arg1": "value1", "arg2": "value2" } }
-{ "function2": { "arg1": "value4", "arg2": "value3", "arg3": "value5" } }
-{ "function3": { "arg1": "value6" } }
-{ "function4": { } }
+{ "open": { "baza": "bd_proj", "login": "ela", "password": "123"}}
+{ "organizer": { "secret": 2, "newlogin": "Ola", "newpassword": "haslo"}}
