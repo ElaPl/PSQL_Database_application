@@ -1,0 +1,11 @@
+su - ela
+
+CREATE DATABASE bd_proj;
+CREATE DATABASE
+ela=# GRANT ALL PRIVILEGES ON DATABASE bd_proj to ela;
+GRANT
+
+psql -d bd_proj -U ela
+
+login ela
+haslo 123
