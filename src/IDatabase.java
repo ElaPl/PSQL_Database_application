@@ -1,3 +1,5 @@
+import java.sql.Timestamp;
+
 import org.json.simple.JSONObject;
 
 
@@ -12,8 +14,12 @@ public interface IDatabase {
 	
 	JSONObject open(String bd_name, String user, String password);
 	JSONObject organizer(String secret, String newlogin, String newpassword);
-	JSONObject return_status_not_impemented();
-	JSONObject return_status_error();
+	JSONObject event(String login, String password, String event_name, Timestamp start_time, Timestamp end_time);
+	JSONObject user(String login, String password, String newLogin, String newPassword);
+
+	// return
+	JSONObject status_not_impemented();
+	JSONObject status_error();
 
 	void close();
     

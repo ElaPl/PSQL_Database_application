@@ -2,8 +2,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,8 +15,7 @@ import org.json.simple.parser.ParseException;
 
 public class Mediator {
 	private JSONParser myparser = new JSONParser();
-	private IDatabase db = new Database();
-
+	private IDatabase db = new Database();	
 	Map<String, IDatabaseMethod> MethodMap = new HashMap<String, IDatabaseMethod>();
 
 	Mediator() {
@@ -24,7 +25,7 @@ public class Mediator {
 					return db.open((String) jobc.get("baza"), (String) jobc.get("login"),
 							(String) jobc.get("password"));
 				}
-				return db.return_status_not_impemented();
+				return db.status_not_impemented();
 			}
 		});
 		
@@ -35,10 +36,43 @@ public class Mediator {
 							(String) jobc.get("newlogin"),
 							(String) jobc.get("newpassword"));	
 				}
-				return db.return_status_not_impemented();
-				
+				return db.status_not_impemented();	
 			}
 		});
+		MethodMap.put("event", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.event((String) jobject.get("login"),(String) jobject.get("password"),
+						(String) jobject.get("eventname"),  
+						Timestamp.valueOf((String)jobject.get("start_timestamp")),
+						Timestamp.valueOf((String)jobject.get("start_timestamp")));
+			
+			}
+		});
+		MethodMap.put("user", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.user((String) jobject.get("login"),(String) jobject.get("password"),
+								(String) jobject.get("newlogin"),(String) jobject.get("newpassword"));
+			
+			}
+		});
+	}
+	private Timestamp get_timestamp (String str)
+	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+		Timestamp timestamp = null;
+		try{
+			System.out.println(str);
+	    Date parsedDate = (Date) dateFormat.parse(str);
+		System.out.println(str);
+	    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+		}
+	    catch(Exception e) {
+	    	 e.printStackTrace();
+	    	 System.out.println("Can not parse json date to java date");
+	    	 System.err.println(e.getClass().getName()+": "+e.getMessage());
+	         System.exit(0);
+	         }
+	    return timestamp;
 	}
 	
 	private boolean isObjString(Object obj) {
@@ -75,25 +109,17 @@ public class Mediator {
 				if (databaseeMethod != null) {
 					print_result(databaseeMethod.execute((JSONObject) jobject.get(key)));
 				} else {
-					JSONObject res = new JSONObject();
-					res.put(db.status, db.status_not_implemented);
-					print_result(res);
+					print_result(db.status_not_impemented());
+					System.out.println("Mediator: Taka funkcja nie istnieje");
 				}
 			}
 
 		} catch (ParseException e) {
-			JSONObject res = new JSONObject();
-			res.put(db.status, db.status_not_implemented);
-			print_result(res);
+			print_result(db.status_error());
+			System.out.println("Mediator: Parse error");
 		}
 	}
 	private void print_result(JSONObject jobc) {
 		System.out.println(jobc);
 	}
 }
-
-/*
- * for(Iterator iterator = jobject.keySet().iterator(); iterator.hasNext();) {
- * String key = (String) iterator.next(); System.out.println("--> " +
- * jobject.get(key)); }
- */

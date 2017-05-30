@@ -1,2 +1,8 @@
 { "open": { "baza": "bd_proj", "login": "ela", "password": "123"}}
-{ "organizer": { "secret": 2, "newlogin": "Ola", "newpassword": "haslo"}}
+{ "organizer": { "secret": "2", "newlogin": "Ela", "newpassword": "haslo"}}
+{ "organizer": { "secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "Ela", "newpassword": "haslo"}}
+{ "event": { "login": "Ela", "password": "haslo", "eventname": "czekolada", "start_timestamp": "2016-11-16 06:43:19","end_timestamp": "2017-11-16 06:43:19"}}
+{ "user": { "login": "Ela", "password": "haslo", "newlogin": "Ola", "newpassword": "321"}}
+{ "user": { "login": "Ela", "password": "haso", "newlogin": "Ola", "newpassword": "321"}}
+{ "user": { "login": "Ela", "password": "haslo", "newlogin": "Ola", "newpassword": "321"}}
+{ "user": { "login": "Ola", "password": "321", "newlogin": "Oa", "newpassword": "31"}}
