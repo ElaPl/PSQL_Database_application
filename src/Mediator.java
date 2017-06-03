@@ -71,6 +71,37 @@ public class Mediator {
 								(String) jobject.get("eventname"));
 			}
 		});
+		MethodMap.put("attendance", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.attendance((String) jobject.get("login"),(String) jobject.get("password"),
+						Integer.parseInt((String)jobject.get("talk")));
+			}
+		});
+		MethodMap.put("evaluation", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.evaluation((String) jobject.get("login"),(String) jobject.get("password"),
+						Integer.parseInt((String)jobject.get("talk")), Integer.parseInt((String)jobject.get("rating")) );
+			}
+		});
+		MethodMap.put("reject", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.reject((String) jobject.get("login"),(String) jobject.get("password"),
+						Integer.parseInt((String)jobject.get("talk")));
+			}
+		});
+		MethodMap.put("proposal", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.proposal((String) jobject.get("login"),(String) jobject.get("password"),
+						Integer.parseInt((String)jobject.get("talk")), (String) jobject.get("title"),
+						Timestamp.valueOf((String)jobject.get("start_timestamp")));
+			}
+		});	
+		MethodMap.put("friends", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.friends((String) jobject.get("login"),(String) jobject.get("password"),
+								(String) jobject.get("login2"));
+			}
+		});
 	}
 	private Timestamp get_timestamp (String str)
 	{

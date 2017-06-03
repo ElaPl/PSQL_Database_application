@@ -19,7 +19,12 @@ public interface IDatabase {
 	JSONObject talk(String login, String password, String speakerlogin, int talk,
 			String title, Timestamp start_timestamp, int room, int initial_evaluation, String eventname);
 	JSONObject register_user_for_event(String login, String password, String event_name);
-	
+	JSONObject attendance(String login, String password, int talkID);
+	JSONObject evaluation(String login, String password, int talkID, int rate);
+	JSONObject reject(String login, String password, int talkID);
+	JSONObject proposal(String login, String password, int talkID, String title, Timestamp start_timestamp );
+	JSONObject friends(String loginFrom, String passwordFrom, String loginTo);
+
 	
 	// return
 	JSONObject status_not_impemented();

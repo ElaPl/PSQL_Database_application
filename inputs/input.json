@@ -9,3 +9,11 @@
 { "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "2", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-17 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
 { "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "3", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-16 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
 { "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "4", "title": "Podwodne zycie zwierzat", "start_timestamp": "2018-12-17 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
+{ "register_user_for_event": { "login": "Wieloryb", "password": "woda", "eventname": "moze"}}
+{ "register_user_for_event": { "login": "Ela", "password": "haslo", "eventname": "moze"}}
+{"attendance": {"login": "Wieloryb", "password": "woda", "talk": "2"}}
+{"evaluation": {"login": "Wieloryb", "password": "woda", "talk": "2", "rating": "4"}}
+{"evaluation": {"login": "Wieloryb", "password": "woda", "talk": "2", "rating": "11"}}
+{"reject": {"login": "Ela", "password": "haslo", "talk": "1"}}
+{"proposal": {"login": "Wieloryb", "password": "woda", "talk": "10", "title": "jak zyc", "start_timestamp": "2018-12-17 06:43:19"}}
+{"friends": {"login": "Ela", "password": "haslo", "login2": "Wieloryb"}}

@@ -124,7 +124,7 @@ public class Database implements IDatabase {
 	public JSONObject register_user_for_event(String login, String password, String event_name) {
 		boolean result;
 		try {
-		CallableStatement func = connection.prepareCall("{ ? = call registerUserOnEvent( ?, ?, ? ) }");
+		CallableStatement func = connection.prepareCall("{ ? = call registerUserForEvent( ?, ?, ? ) }");
 		func.registerOutParameter(1, Types.BOOLEAN);
 		func.setString(2, login);
 		func.setString(3, password);
@@ -135,13 +135,113 @@ public class Database implements IDatabase {
 		}catch(SQLException e) {
 			return status_error();
 		}
-		if (result) {
-			return status_ok();
-		}
-		else {
+		if (!result) {
 			return status_error();
 		}
+		return status_ok();
 	}
+	public JSONObject attendance(String login, String password, int talkID) {
+		boolean result;
+		try {
+		CallableStatement func = connection.prepareCall("{ ? = call attendance( ?, ?, ? ) }");
+		func.registerOutParameter(1, Types.BOOLEAN);
+		func.setString(2, login);
+		func.setString(3, password);
+		func.setInt(4, talkID);
+		func.execute();
+		result = func.getBoolean(1);
+		func.close();
+		}catch(SQLException e) {
+			return status_error();
+		}
+		if (!result) {
+			return status_error();
+		}
+		return status_ok();
+	}
+	public JSONObject evaluation(String login, String password, int talkID, int rate) {
+		boolean result;
+		try {
+		CallableStatement func = connection.prepareCall("{ ? = call evaluation( ?, ?, ?, ? ) }");
+		func.registerOutParameter(1, Types.BOOLEAN);
+		func.setString(2, login);
+		func.setString(3, password);
+		func.setInt(4, talkID);
+		func.setInt(5, rate);
+		func.execute();
+		result = func.getBoolean(1);
+		func.close();
+		}catch(SQLException e) {
+			return status_error();
+		}
+		if (!result) {
+			return status_error();
+		}
+		return status_ok();
+	}
+	
+	public JSONObject reject(String login, String password, int talkID) {
+		boolean result;
+		try {
+		CallableStatement func = connection.prepareCall("{ ? = call reject( ?, ?, ? ) }");
+		func.registerOutParameter(1, Types.BOOLEAN);
+		func.setString(2, login);
+		func.setString(3, password);
+		func.setInt(4, talkID);
+		func.execute();
+		result = func.getBoolean(1);
+		func.close();
+		}catch(SQLException e) {
+			return status_error();
+		}
+		if (!result) {
+			return status_error();
+		}
+		return status_ok();
+	}
+
+	public JSONObject proposal(String login, String password, int talkID, String title, Timestamp start_timestamp ) {
+		boolean result;
+		try {
+		CallableStatement func = connection.prepareCall("{ ? = call proposal( ?, ?, ?, ?, ? ) }");
+		func.registerOutParameter(1, Types.BOOLEAN);
+		func.setString(2, login);
+		func.setString(3, password);
+		func.setInt(4, talkID);
+		func.setString(5, title);
+		func.setTimestamp(6, start_timestamp);
+		func.execute();
+		result = func.getBoolean(1);
+		func.close();
+		}catch(SQLException e) {
+			return status_error();
+		}
+		if (!result) {
+			return status_error();
+		}
+		return status_ok();
+	}
+	public JSONObject friends(String loginFrom, String passwordFrom, String loginTo) {
+		boolean result;
+		try {
+		CallableStatement func = connection.prepareCall("{ ? = call friends( ?, ?, ?) }");
+		func.registerOutParameter(1, Types.BOOLEAN);
+		func.setString(2, loginFrom);
+		func.setString(3, passwordFrom);
+		func.setString(4, loginTo);
+		func.execute();
+		result = func.getBoolean(1);
+		func.close();
+		}catch(SQLException e) {
+			return status_error();
+		}
+		if (!result) {
+			return status_error();
+		}
+		return status_ok();
+	}
+
+	
 	
 	public JSONObject status_not_impemented() {
 		JSONObject result = new JSONObject();
