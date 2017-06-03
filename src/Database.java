@@ -1,8 +1,9 @@
-import java.sql.*;
+ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.Date;
 
 import org.json.simple.JSONObject;
 
@@ -36,69 +37,111 @@ public class Database implements IDatabase {
 		if (!secret.equals("d8578edf8458ce06fbc5bb76a58c5ca4")) {
 			return status_error();
 		}
-		try {
-			Statement stmt = connection.createStatement();
-			String sql_command = "INSERT INTO Person (Login, user_password, role) " + "VALUES ('" + newlogin + "', '"
-					+ newpassword + "', 'o');";
-			stmt.executeUpdate(sql_command);
-		} catch (SQLException e) {
+		try{
+			CallableStatement func = connection.prepareCall("{ ? = call addOrganizer( ?, ? ) }");
+			func.registerOutParameter(1, Types.BOOLEAN);
+			func.setString(2, newlogin);
+			func.setString(3, newpassword);
+			func.execute();
+			Boolean done = func.getBoolean(1);
+			if (!done) {
+				return status_error();
+			}
+			func.close();
+		}catch(SQLException e) {
 			return status_error();
 		}
 		return status_ok();
+
 	}
 
 	public JSONObject event(String login, String password, String event_name, Timestamp start_time,
 			Timestamp end_time) {
 		try{
-			CallableStatement func = connection.prepareCall("{ ? = call IsOrganizer( ?, ? ) }");
+			CallableStatement func = connection.prepareCall("{ ? = call addEvent( ?, ?, ?, ?, ? ) }");
 			func.registerOutParameter(1, Types.BOOLEAN);
 			func.setString(2, login);
 			func.setString(3, password);
+			func.setString(4, event_name);
+			func.setTimestamp(5, start_time);
+			func.setTimestamp(6, end_time);
 			func.execute();
-			Boolean isOrganizer = func.getBoolean(1);
-			func.close();
-			if (!isOrganizer) {
+			Boolean done = func.getBoolean(1);
+			if (!done) {
 				return status_error();
 			}
-			String statement = "INSERT INTO event (name, start_timestamp, end_timestamp) VALUES ( ?, ?, ?);";
-			PreparedStatement stmt = connection.prepareStatement(statement);
-			stmt.setString(1, event_name);
-			stmt.setTimestamp(2, start_time);
-			stmt.setTimestamp(3, end_time);
-			stmt.execute();
-		} catch (SQLException e) {
+			func.close();
+		}catch(SQLException e) {
 			return status_error();
 		}
 		return status_ok();
 	}
 	public JSONObject user(String login, String password, String newLogin, String newPassword) {
 		try{
-			CallableStatement func = connection.prepareCall("{ ? = call IsOrganizer( ?, ? ) }");
+			CallableStatement func = connection.prepareCall("{ ? = call addUser( ?, ?, ?, ? ) }");
 			func.registerOutParameter(1, Types.BOOLEAN);
 			func.setString(2, login);
 			func.setString(3, password);
+			func.setString(4, newLogin);
+			func.setString(5, newPassword);
 			func.execute();
-			Boolean isOrganizer = func.getBoolean(1);
-			func.close();
-			if (!isOrganizer) {
+			Boolean done = func.getBoolean(1);
+			if (!done) {
 				return status_error();
 			}
-			String statement = "INSERT INTO Person (login, user_password, role) VALUES ( ?, ?, 'u');";
-			PreparedStatement stmt = connection.prepareStatement(statement);
-			stmt.setString(1, newLogin);
-			stmt.setString(2, newPassword);
-			stmt.execute();
-		} catch (SQLException e) {
+			func.close();
+		}catch(SQLException e) {
 			return status_error();
 		}
 		return status_ok();
 	}
-	public JSONObject talk(String login, String password, String speakerlogin, int talk
+	public JSONObject talk(String login, String password, String speakerlogin, int talk_id,
 			String title, Timestamp start_timestamp, int room, int initial_evaluation, String eventname) {
-			
-		
+			try {
+			CallableStatement func = connection.prepareCall("{ ? = call registerTalk( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }");
+			func.registerOutParameter(1, Types.BOOLEAN);
+			func.setString(2, login);
+			func.setString(3, password);
+			func.setString(4, speakerlogin);
+			func.setInt(5, talk_id);
+			func.setString(6, title);
+			func.setTimestamp(7, start_timestamp);
+			func.setInt(8, room);
+			func.setInt(9, initial_evaluation);
+			func.setString(10, eventname);
+			func.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+			func.execute();
+			Boolean done = func.getBoolean(1);
+			func.close();
+			if (!done) {
+				return status_error();
+			}
+			} catch(SQLException e) {
+				return status_error();
+			}
+			return status_ok();
 	}
-	
+	public JSONObject register_user_for_event(String login, String password, String event_name) {
+		boolean result;
+		try {
+		CallableStatement func = connection.prepareCall("{ ? = call registerUserOnEvent( ?, ?, ? ) }");
+		func.registerOutParameter(1, Types.BOOLEAN);
+		func.setString(2, login);
+		func.setString(3, password);
+		func.setString(4, event_name);
+		func.execute();
+		result = func.getBoolean(1);
+		func.close();
+		}catch(SQLException e) {
+			return status_error();
+		}
+		if (result) {
+			return status_ok();
+		}
+		else {
+			return status_error();
+		}
+	}
 	
 	public JSONObject status_not_impemented() {
 		JSONObject result = new JSONObject();

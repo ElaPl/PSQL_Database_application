@@ -44,15 +44,31 @@ public class Mediator {
 				return db.event((String) jobject.get("login"),(String) jobject.get("password"),
 						(String) jobject.get("eventname"),  
 						Timestamp.valueOf((String)jobject.get("start_timestamp")),
-						Timestamp.valueOf((String)jobject.get("start_timestamp")));
+						Timestamp.valueOf((String)jobject.get("end_timestamp")));
 			
 			}
 		});
 		MethodMap.put("user", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
 				return db.user((String) jobject.get("login"),(String) jobject.get("password"),
-								(String) jobject.get("newlogin"),(String) jobject.get("newpassword"));
-			
+						(String) jobject.get("newlogin"), (String) jobject.get("newpassword")); 
+			}
+		});
+
+		MethodMap.put("talk", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.talk((String) jobject.get("login"),(String) jobject.get("password"),
+								(String) jobject.get("speakerlogin"), Integer.parseInt((String) jobject.get("talk")),
+								(String) jobject.get("title"), Timestamp.valueOf((String)jobject.get("start_timestamp")),
+								Integer.parseInt((String)jobject.get("room")), 
+								Integer.parseInt((String)jobject.get("initial_evaluation")),
+								(String) jobject.get("eventname"));
+			}
+		});
+		MethodMap.put("register_user_for_event", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.register_user_for_event((String) jobject.get("login"),(String) jobject.get("password"),
+								(String) jobject.get("eventname"));
 			}
 		});
 	}
@@ -88,6 +104,7 @@ public class Mediator {
 			FileReader fileReader = new FileReader("inputs/input.json");
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			while ((line = bufferedReader.readLine()) != null) {
+				System.out.println(line);
 				call(line);
 			}
 			bufferedReader.close();

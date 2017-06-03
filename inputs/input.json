@@ -1,8 +1,11 @@
 { "open": { "baza": "bd_proj", "login": "ela", "password": "123"}}
 { "organizer": { "secret": "2", "newlogin": "Ela", "newpassword": "haslo"}}
 { "organizer": { "secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "Ela", "newpassword": "haslo"}}
+{ "organizer": { "secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "ola", "newpassword": "halo"}}
 { "event": { "login": "Ela", "password": "haslo", "eventname": "czekolada", "start_timestamp": "2016-11-16 06:43:19","end_timestamp": "2017-11-16 06:43:19"}}
-{ "user": { "login": "Ela", "password": "haslo", "newlogin": "Ola", "newpassword": "321"}}
-{ "user": { "login": "Ela", "password": "haso", "newlogin": "Ola", "newpassword": "321"}}
-{ "user": { "login": "Ela", "password": "haslo", "newlogin": "Ola", "newpassword": "321"}}
-{ "user": { "login": "Ola", "password": "321", "newlogin": "Oa", "newpassword": "31"}}
+{ "event": { "login": "Ela", "password": "haslo", "eventname": "moze", "start_timestamp": "2017-11-17 06:43:19","end_timestamp": "2018-12-16 06:43:19"}}
+{ "user": { "login": "Ela", "password": "haslo", "newlogin": "Wieloryb", "newpassword": "woda"}}
+{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "1", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-18 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
+{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "2", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-17 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
+{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "3", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-16 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
+{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "4", "title": "Podwodne zycie zwierzat", "start_timestamp": "2018-12-17 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
