@@ -98,7 +98,7 @@ public class Database implements IDatabase {
 	public JSONObject talk(String login, String password, String speakerlogin, int talk_id,
 			String title, Timestamp start_timestamp, int room, int initial_evaluation, String eventname) {
 			try {
-			CallableStatement func = connection.prepareCall("{ ? = call registerTalk( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }");
+			CallableStatement func = connection.prepareCall("{ ? = call registerTalk( ?, ?, ?, ?, ?, ?, ?, ?, ? ) }");
 			func.registerOutParameter(1, Types.BOOLEAN);
 			func.setString(2, login);
 			func.setString(3, password);
@@ -109,7 +109,6 @@ public class Database implements IDatabase {
 			func.setInt(8, room);
 			func.setInt(9, initial_evaluation);
 			func.setString(10, eventname);
-			func.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
 			func.execute();
 			Boolean done = func.getBoolean(1);
 			func.close();
