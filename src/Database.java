@@ -251,6 +251,8 @@ public class Database implements IDatabase {
 	public JSONObject status_error() {
 		JSONObject result = new JSONObject();
 		result.put(status, status_error);
+		System.out.println("Error");
+		System.exit(0);
 		return result;
 	}
 

@@ -102,7 +102,7 @@ public class Mediator {
 		});
 		MethodMap.put("friends", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
-				return db.friends((String) jobject.get("login"), (String) jobject.get("password"),
+				return db.friends((String) jobject.get("login1"), (String) jobject.get("password"),
 						(String) jobject.get("login2"));
 			}
 		});

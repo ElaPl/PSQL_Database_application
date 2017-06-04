@@ -9,7 +9,7 @@ public class DateUtil {
 	private static final String DMY_FORMAT = "dd{sep}MM{sep}yyyy";
 	private static final String YMD_FORMAT = "yyyy{sep}MM{sep}dd";
 
-	private static final String ymd_template = "\\d{4}{sep}\\d{2}{sep}\\d{2}.*";
+	private static final String ymd_template = "\\d{4}{sep}\\d{1,2}{sep}\\d{1,2}.*";
 	private static final String dmy_template = "\\d{2}{sep}\\d{2}{sep}\\d{4}.*";
 
 	public static Date stringToDate(String input) {
