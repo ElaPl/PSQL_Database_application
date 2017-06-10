@@ -90,20 +90,21 @@ public class Database implements IDatabase {
 		}
 		return status_ok();
 	}
-	public JSONObject talk(String login, String password, String speakerlogin, int talk_id,
+	public JSONObject talk(String login, String password, String speakerlogin, String talk_id,
 			String title, Timestamp start_timestamp, int room, int initial_evaluation, String eventname) {
 			try {
-			CallableStatement func = connection.prepareCall("{ ? = call registerTalk( ?, ?, ?, ?, ?, ?, ?, ?, ? ) }");
+			CallableStatement func = connection.prepareCall("{ ? = call registerTalk( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) }");
 			func.registerOutParameter(1, Types.BOOLEAN);
 			func.setString(2, login);
 			func.setString(3, password);
 			func.setString(4, speakerlogin);
-			func.setInt(5, talk_id);
+			func.setString(5, talk_id);
 			func.setString(6, title);
 			func.setTimestamp(7, start_timestamp);
 			func.setInt(8, room);
 			func.setInt(9, initial_evaluation);
 			func.setString(10, eventname);
+			func.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
 			func.execute();
 			Boolean done = func.getBoolean(1);
 			func.close();
@@ -134,14 +135,14 @@ public class Database implements IDatabase {
 		}
 		return status_ok();
 	}
-	public JSONObject attendance(String login, String password, int talkID) {
+	public JSONObject attendance(String login, String password, String talkID) {
 		boolean result;
 		try {
 		CallableStatement func = connection.prepareCall("{ ? = call attendance( ?, ?, ? ) }");
 		func.registerOutParameter(1, Types.BOOLEAN);
 		func.setString(2, login);
 		func.setString(3, password);
-		func.setInt(4, talkID);
+		func.setString(4, talkID);
 		func.execute();
 		result = func.getBoolean(1);
 		func.close();
@@ -153,14 +154,14 @@ public class Database implements IDatabase {
 		}
 		return status_ok();
 	}
-	public JSONObject evaluation(String login, String password, int talkID, int rate) {
+	public JSONObject evaluation(String login, String password, String talkID, int rate) {
 		boolean result;
 		try {
 		CallableStatement func = connection.prepareCall("{ ? = call evaluation( ?, ?, ?, ? ) }");
 		func.registerOutParameter(1, Types.BOOLEAN);
 		func.setString(2, login);
 		func.setString(3, password);
-		func.setInt(4, talkID);
+		func.setString(4, talkID);
 		func.setInt(5, rate);
 		func.execute();
 		result = func.getBoolean(1);
@@ -169,19 +170,20 @@ public class Database implements IDatabase {
 			return status_error();
 		}
 		if (!result) {
+			System.out.println(rate);
 			return status_error();
 		}
 		return status_ok();
 	}
 	
-	public JSONObject reject(String login, String password, int talkID) {
+	public JSONObject reject(String login, String password, String talkID) {
 		boolean result;
 		try {
 		CallableStatement func = connection.prepareCall("{ ? = call reject( ?, ?, ? ) }");
 		func.registerOutParameter(1, Types.BOOLEAN);
 		func.setString(2, login);
 		func.setString(3, password);
-		func.setInt(4, talkID);
+		func.setString(4, talkID);
 		func.execute();
 		result = func.getBoolean(1);
 		func.close();
@@ -194,16 +196,18 @@ public class Database implements IDatabase {
 		return status_ok();
 	}
 
-	public JSONObject proposal(String login, String password, int talkID, String title, Timestamp start_timestamp ) {
+	public JSONObject proposal(String login, String password, String talkID, String title, Timestamp start_timestamp ) {
 		boolean result;
 		try {
-		CallableStatement func = connection.prepareCall("{ ? = call proposal( ?, ?, ?, ?, ? ) }");
+		CallableStatement func = connection.prepareCall("{ ? = call proposal( ?, ?, ?, ?, ?, ? ) }");
 		func.registerOutParameter(1, Types.BOOLEAN);
 		func.setString(2, login);
 		func.setString(3, password);
-		func.setInt(4, talkID);
+		func.setString(4, talkID);
 		func.setString(5, title);
 		func.setTimestamp(6, start_timestamp);
+		func.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+
 		func.execute();
 		result = func.getBoolean(1);
 		func.close();
@@ -244,7 +248,7 @@ public class Database implements IDatabase {
 			while (rs.next()) {
 				JSONObject row  = new JSONObject();
 				row.put("login", rs.getString("login"));
-				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("talk_id", rs.getString("talk_id"));
 				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
 				row.put("title", rs.getString("title"));
 				row.put("room", rs.getInt("room"));
@@ -264,7 +268,7 @@ public class Database implements IDatabase {
 	        JSONArray list = new JSONArray();
 			while (rs.next()) {
 				JSONObject row  = new JSONObject();
-				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("talk_id", rs.getString("talk_id"));
 				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
 				row.put("title", rs.getString("title"));
 				row.put("room", rs.getInt("room"));
@@ -286,7 +290,7 @@ public class Database implements IDatabase {
 	        JSONArray list = new JSONArray();
 			while (rs.next()) {
 				JSONObject row  = new JSONObject();
-				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("talk_id", rs.getString("talk_id"));
 				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
 				row.put("title", rs.getString("title"));
 				row.put("room", rs.getInt("room"));
@@ -307,7 +311,7 @@ public class Database implements IDatabase {
 	        JSONArray list = new JSONArray();
 			while (rs.next()) {
 				JSONObject row  = new JSONObject();
-				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("talk_id", rs.getString("talk_id"));
 				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
 				row.put("title", rs.getString("title"));
 				row.put("room", rs.getInt("room"));
@@ -328,7 +332,7 @@ public class Database implements IDatabase {
 	        JSONArray list = new JSONArray();
 			while (rs.next()) {
 				JSONObject row  = new JSONObject();
-				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("talk_id", rs.getString("talk_id"));
 				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
 				row.put("title", rs.getString("title"));
 				row.put("room", rs.getInt("room"));
@@ -350,7 +354,7 @@ public class Database implements IDatabase {
 	        JSONArray list = new JSONArray();
 			while (rs.next()) {
 				JSONObject row  = new JSONObject();
-				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("talk_id", rs.getString("talk_id"));
 				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
 				row.put("title", rs.getString("title"));
 				row.put("room", rs.getInt("room"));
@@ -362,16 +366,16 @@ public class Database implements IDatabase {
 			return status_error();
 		}
 	}
-	public JSONObject recently_added_talks(int limit) {
+	public JSONObject recently_added_talks(int _limit) {
 		try {
 			CallableStatement func = connection.prepareCall("SELECT * FROM recently_added_talks(?);");
-			func.setInt(3, limit);
+			func.setInt(1, _limit);
 			ResultSet rs = func.executeQuery();
 	        JSONArray list = new JSONArray();
 			while (rs.next()) {
 				JSONObject row  = new JSONObject();
-				row.put("talk_id", rs.getInt("talk_id"));
-				row.put("speakerlogin", rs.getString("speakerlogin"));
+				row.put("talk_id", rs.getString("talk_id"));
+				row.put("speakerlogin", rs.getString("login"));
 				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
 				row.put("title", rs.getString("title"));
 				row.put("room", rs.getInt("room"));
@@ -382,6 +386,49 @@ public class Database implements IDatabase {
 			return status_error();
 		}
 	}
+	
+	public JSONObject rejected_talks(String login, String password) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM rejected_talks(?, ?);");
+			func.setString(1, login);
+			func.setString(2, password);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("talk_id", rs.getString("talk_id"));
+				row.put("speakerlogin", rs.getString("login"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}
+
+public JSONObject proposals(String login, String password) {
+	try {
+		CallableStatement func = connection.prepareCall("SELECT * FROM proposals(?, ?);");
+		func.setString(1, login);
+		func.setString(2, password);
+		ResultSet rs = func.executeQuery();
+        JSONArray list = new JSONArray();
+		while (rs.next()) {
+			JSONObject row  = new JSONObject();
+			row.put("talk_id", rs.getString("talk_id"));
+			row.put("speakerlogin", rs.getString("login"));
+			row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+			row.put("title", rs.getString("title"));
+			list.add(row);
+		}
+		return status_OK_with_data(list);
+	}catch(SQLException e) {
+		return status_error();
+	}
+}
+	
 
 	public JSONObject status_OK_with_data(JSONArray rows) {
 		JSONObject result = new JSONObject();

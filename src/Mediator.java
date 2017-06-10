@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import static java.lang.Math.toIntExact;
 
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
@@ -61,10 +62,9 @@ public class Mediator {
 		MethodMap.put("talk", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
 				return db.talk((String) jobject.get("login"), (String) jobject.get("password"),
-						(String) jobject.get("speakerlogin"), Integer.parseInt((String) jobject.get("talk")),
+						(String) jobject.get("speakerlogin"), (String) jobject.get("talk"),
 						(String) jobject.get("title"), convertStringToTimestamp((String) jobject.get("start_timestamp")),
-						Integer.parseInt((String) jobject.get("room")),
-						Integer.parseInt((String) jobject.get("initial_evaluation")),
+						toInt(jobject.get("room")), toInt(jobject.get("initial_evaluation")),
 						(String) jobject.get("eventname"));
 			}
 		});
@@ -77,26 +77,25 @@ public class Mediator {
 		MethodMap.put("attendance", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
 				return db.attendance((String) jobject.get("login"), (String) jobject.get("password"),
-						Integer.parseInt((String) jobject.get("talk")));
+						(String) jobject.get("talk"));
 			}
 		});
 		MethodMap.put("evaluation", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
 				return db.evaluation((String) jobject.get("login"), (String) jobject.get("password"),
-						Integer.parseInt((String) jobject.get("talk")),
-						Integer.parseInt((String) jobject.get("rating")));
+						(String) jobject.get("talk"), toIntExact((Long)jobject.get("rating")));
 			}
 		});
 		MethodMap.put("reject", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
 				return db.reject((String) jobject.get("login"), (String) jobject.get("password"),
-						Integer.parseInt((String) jobject.get("talk")));
+						(String) jobject.get("talk"));
 			}
 		});
 		MethodMap.put("proposal", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
 				return db.proposal((String) jobject.get("login"), (String) jobject.get("password"),
-						Integer.parseInt((String) jobject.get("talk")), (String) jobject.get("title"),
+						(String) jobject.get("talk"), (String) jobject.get("title"),
 						convertStringToTimestamp((String) jobject.get("start_timestamp")));
 			}
 		});
@@ -108,7 +107,7 @@ public class Mediator {
 		});
 		MethodMap.put("user_plan", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
-				return db.user_plan((String) jobject.get("login"), Integer.parseInt((String) jobject.get("limit")));
+				return db.user_plan((String) jobject.get("login"), toInt(jobject.get("limit")));
 			}
 		});
 		
@@ -122,7 +121,7 @@ public class Mediator {
 			public JSONObject execute(JSONObject jobject) {
 				return db.best_talks(convertStringToTimestamp((String) jobject.get("start_timestamp")),
 						convertStringToTimestamp((String) jobject.get("end_timestamp")),
-						Integer.parseInt((String) jobject.get("limit")), Integer.parseInt((String) jobject.get("all")));
+						toInt(jobject.get("limit")), toInt(jobject.get("all")));
 			}
 		});
 		
@@ -130,7 +129,7 @@ public class Mediator {
 			public JSONObject execute(JSONObject jobject) {
 				return db.most_popular_talks(convertStringToTimestamp((String) jobject.get("start_timestamp")),
 						convertStringToTimestamp((String) jobject.get("end_timestamp")),
-						Integer.parseInt((String) jobject.get("limit")));
+						toInt(jobject.get("limit")));
 			}
 		});
 		
@@ -143,17 +142,38 @@ public class Mediator {
 		MethodMap.put("abandoned_talks", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
 				return db.abandoned_talks((String) jobject.get("login"), (String) jobject.get("password"),
-						Integer.parseInt((String) jobject.get("number")));
+						toInt(jobject.get("number")));
 			}
 		});
 		
 		MethodMap.put("recently_added_talks", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobject) {
-				return db.recently_added_talks(Integer.parseInt((String) jobject.get("limit")));
+				return db.recently_added_talks(toInt(jobject.get("limit")));
+			}
+		});
+		MethodMap.put("rejected_talks", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.rejected_talks((String) jobject.get("login"), (String) jobject.get("password"));
+			}
+		});
+		MethodMap.put("proposals", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.proposals((String) jobject.get("login"), (String) jobject.get("password"));
 			}
 		});
 	}
 
+	private int toInt(Object obj) {
+		int result;
+		try {
+			result = Integer.parseInt((String) obj);
+		}catch (Exception e) {
+			result = toIntExact((Long) obj);
+		}
+		return result;
+		
+	}
+	
 	private Date convertStringToDate(String str_date) {
 		java.util.Date date = dateUtil.stringToDate(str_date);
 		return new Date(date.getTime());
