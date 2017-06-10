@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.Date;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class Database implements IDatabase {
@@ -12,18 +13,12 @@ public class Database implements IDatabase {
 	Connection connection = null;
 
 	private String url = "jdbc:postgresql://localhost/";
-	private String user;
-	private String password;
 
 	public JSONObject open(String bd_name, String user, String password) {
 		try {
 			Class.forName("org.postgresql.Driver");
-
-			url = url + bd_name;
-			this.user = user;
-			this.password = password;
 			try {
-				connection = DriverManager.getConnection(url, user, password);
+				connection = DriverManager.getConnection(url + bd_name, user, password);
 			} catch (SQLException e) {
 				return status_error();
 			}
@@ -239,8 +234,161 @@ public class Database implements IDatabase {
 		}
 		return status_ok();
 	}
-
+	public JSONObject user_plan(String login, int limit) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM user_plan(?, ?);");
+			func.setString(1, login);
+			func.setInt(2, limit);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("login", rs.getString("login"));
+				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				row.put("room", rs.getInt("room"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}
 	
+	public JSONObject day_plan(java.sql.Date timestamp) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM day_plan(?);");
+			func.setDate(1, timestamp);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				row.put("room", rs.getInt("room"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}
+	public JSONObject best_talks(Timestamp start_timestamp, Timestamp end_timestamp, int limit, int all) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM best_talks(?, ?, ?, ?);");
+			func.setTimestamp(1, start_timestamp);
+			func.setTimestamp(2, end_timestamp);
+			func.setInt(3, limit);
+			func.setInt(4, all);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				row.put("room", rs.getInt("room"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}
+	public JSONObject most_popular_talks(Timestamp start_timestamp, Timestamp end_timestamp, int limit) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM most_popular_talks(?, ?, ?);");
+			func.setTimestamp(1, start_timestamp);
+			func.setTimestamp(2, end_timestamp);
+			func.setInt(3, limit);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				row.put("room", rs.getInt("room"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}
+	
+	public JSONObject attended_talks(String login, String password) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM attended_talks(?, ?);");
+			func.setString(1, login);
+			func.setString(2, password);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				row.put("room", rs.getInt("room"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}	
+		
+	public JSONObject abandoned_talks(String login, String password, int limit) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM abandoned_talks(?, ?, ?);");
+			func.setString(1, login);
+			func.setString(2, password);
+			func.setInt(3, limit);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				row.put("room", rs.getInt("room"));
+				row.put("number", rs.getInt("number"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}
+	public JSONObject recently_added_talks(int limit) {
+		try {
+			CallableStatement func = connection.prepareCall("SELECT * FROM recently_added_talks(?);");
+			func.setInt(3, limit);
+			ResultSet rs = func.executeQuery();
+	        JSONArray list = new JSONArray();
+			while (rs.next()) {
+				JSONObject row  = new JSONObject();
+				row.put("talk_id", rs.getInt("talk_id"));
+				row.put("speakerlogin", rs.getString("speakerlogin"));
+				row.put("start_timestamp", rs.getTimestamp("start_timestamp"));
+				row.put("title", rs.getString("title"));
+				row.put("room", rs.getInt("room"));
+				list.add(row);
+			}
+			return status_OK_with_data(list);
+		}catch(SQLException e) {
+			return status_error();
+		}
+	}
+
+	public JSONObject status_OK_with_data(JSONArray rows) {
+		JSONObject result = new JSONObject();
+		result.put(status, status_ok);
+		result.put("data", rows);
+		return result;
+	}
 	
 	public JSONObject status_not_impemented() {
 		JSONObject result = new JSONObject();

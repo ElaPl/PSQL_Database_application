@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateUtil {
-	private static final String[] timeFormats = { "HH:mm:ss", "HH:mm" };
+	private static final String[] timeFormats = { "HH:mm:ss", "HH:mm"};
 	private static final String[] dateSeparators = { "/", "-", " " };
 
 	private static final String DMY_FORMAT = "dd{sep}MM{sep}yyyy";

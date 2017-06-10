@@ -1,4 +1,5 @@
 import java.sql.Timestamp;
+import java.sql.Date;
 
 import org.json.simple.JSONObject;
 
@@ -24,7 +25,13 @@ public interface IDatabase {
 	JSONObject reject(String login, String password, int talkID);
 	JSONObject proposal(String login, String password, int talkID, String title, Timestamp start_timestamp );
 	JSONObject friends(String loginFrom, String passwordFrom, String loginTo);
-
+	JSONObject user_plan(String login, int limit);
+	JSONObject day_plan(Date timestamp);
+	JSONObject best_talks(Timestamp start_timestamp, Timestamp end_timestamp, int limit, int all);
+	JSONObject most_popular_talks(Timestamp start_timestamp, Timestamp end_timestamp, int limit);
+	JSONObject attended_talks(String login, String password);
+	JSONObject abandoned_talks(String login, String password, int limit);
+	JSONObject recently_added_talks(int limit);
 	
 	// return
 	JSONObject status_not_impemented();

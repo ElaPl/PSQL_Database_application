@@ -106,8 +106,59 @@ public class Mediator {
 						(String) jobject.get("login2"));
 			}
 		});
+		MethodMap.put("user_plan", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.user_plan((String) jobject.get("login"), Integer.parseInt((String) jobject.get("limit")));
+			}
+		});
+		
+		MethodMap.put("day_plan", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.day_plan(convertStringToDate((String) jobject.get("timestamp")));
+			}
+		});
+		
+		MethodMap.put("best_talks", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.best_talks(convertStringToTimestamp((String) jobject.get("start_timestamp")),
+						convertStringToTimestamp((String) jobject.get("end_timestamp")),
+						Integer.parseInt((String) jobject.get("limit")), Integer.parseInt((String) jobject.get("all")));
+			}
+		});
+		
+		MethodMap.put("most_popular_talks", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.most_popular_talks(convertStringToTimestamp((String) jobject.get("start_timestamp")),
+						convertStringToTimestamp((String) jobject.get("end_timestamp")),
+						Integer.parseInt((String) jobject.get("limit")));
+			}
+		});
+		
+		MethodMap.put("attended_talks", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.attended_talks((String) jobject.get("login"), (String) jobject.get("password"));
+			}
+		});
+		
+		MethodMap.put("abandoned_talks", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.abandoned_talks((String) jobject.get("login"), (String) jobject.get("password"),
+						Integer.parseInt((String) jobject.get("number")));
+			}
+		});
+		
+		MethodMap.put("recently_added_talks", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.recently_added_talks(Integer.parseInt((String) jobject.get("limit")));
+			}
+		});
 	}
 
+	private Date convertStringToDate(String str_date) {
+		java.util.Date date = dateUtil.stringToDate(str_date);
+		return new Date(date.getTime());
+	}
+	
 	private Timestamp convertStringToTimestamp(String str_date) {
 		java.util.Date date = dateUtil.stringToDate(str_date);
 		return new Timestamp(date.getTime());

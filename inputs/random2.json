@@ -1,0 +1,26 @@
+{ "open": { "baza": "bd_proj", "login": "ela", "password": "123"}}
+{"organizer": {"secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "o1", "newpassword": "oh1"}}
+{"organizer": {"secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "o2", "newpassword": "oh2"}}
+{"organizer": {"secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "o3", "newpassword": "oh3"}}
+{"event": {"login": "o1", "password": "oh1", "eventname": "Konwent", "start_timestamp": "2016-01-20 10:00", "end_timestamp": "2016-02-01 18:00"}}
+{"event": {"login": "o2", "password": "oh2", "eventname": "PG", "start_timestamp": "2017-01-02 8:00", "end_timestamp": "2017-02-02 18:00"}}
+{"event": {"login": "o1", "password": "oh1", "eventname": "KASIA", "start_timestamp": "2017-03-12 11:00", "end_timestamp": "2017-03-15 21:00"}}
+{"event": {"login": "o1", "password": "oh1", "eventname": "maraton", "start_timestamp": "2017-03-12 11:00", "end_timestamp": "2017-03-15 21:00"}}
+{ "user": { "login": "o1", "password": "oh1", "newlogin": "u1", "newpassword": "uh1"} }
+{ "user": { "login": "o2", "password": "oh2", "newlogin": "u2", "newpassword": "uh2"} }
+{ "user": { "login": "o1", "password": "oh1", "newlogin": "u3", "newpassword": "uh3"} }
+{ "user": { "login": "o3", "password": "oh3", "newlogin": "u4", "newpassword": "uh4"} }
+{ "user": { "login": "o2", "password": "oh2", "newlogin": "u5", "newpassword": "uh5"} }
+{ "user": { "login": "o3", "password": "oh3", "newlogin": "u6", "newpassword": "uh6"} }
+{ "register_user_for_event": { "login": "u1", "password": "uh1", "eventname": "Konwent"} }
+{ "register_user_for_event": { "login": "u2", "password": "uh2", "eventname": "Konwent"} }
+{ "register_user_for_event": { "login": "u3", "password": "uh3", "eventname": "Konwent"} }
+{ "register_user_for_event": { "login": "u4", "password": "uh4", "eventname": "Konwent"} }
+{ "register_user_for_event": { "login": "u1", "password": "uh1", "eventname": "PG"} }
+{ "register_user_for_event": { "login": "u1", "password": "uh1", "eventname": "maraton"} }
+{ "talk": { "login":"o1", "password":"oh1", "speakerlogin":"u2", "talk":"1", "title":"t1", "start_timestamp":"2016-01-20 11:00", "room":"177", "initial_evaluation":"9", "eventname":"Konwent" } }
+{ "talk": { "login":"o1", "password":"oh1", "speakerlogin":"u3", "talk":"2", "title":"t2", "start_timestamp":"2016-01-20 12:00", "room":"177", "initial_evaluation":"9", "eventname":"Konwent" } }
+{ "talk": { "login":"o1", "password":"oh1", "speakerlogin":"u2", "talk":"3", "title":"t3", "start_timestamp":"2016-01-20 12:00", "room":"177", "initial_evaluation":"9", "eventname":"Konwent" } }
+{ "talk": { "login":"o1", "password":"oh1", "speakerlogin":"u2", "talk":"4", "title":"t4", "start_timestamp":"2017-01-03 8:00", "room":"177", "initial_evaluation":"9", "eventname":"PG" } }
+{ "attendance": { "login": "u1", "password": "uh1", "talk": "2" } }
+{ "abandoned_talks": {"login": "u1", "password": "uh1", "number":"20" }}

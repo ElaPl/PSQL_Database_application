@@ -1,19 +1,12 @@
 { "open": { "baza": "bd_proj", "login": "ela", "password": "123"}}
-{ "organizer": { "secret": "2", "newlogin": "Ela", "newpassword": "haslo"}}
-{ "organizer": { "secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "Ela", "newpassword": "haslo"}}
-{ "organizer": { "secret": "d8578edf8458ce06fbc5bb76a58c5ca4", "newlogin": "ola", "newpassword": "halo"}}
-{ "event": { "login": "Ela", "password": "haslo", "eventname": "czekolada", "start_timestamp": "2016-11-16 06:43:19","end_timestamp": "2017-11-16 06:43:19"}}
-{ "event": { "login": "Ela", "password": "haslo", "eventname": "moze", "start_timestamp": "2017-11-17 06:43:19","end_timestamp": "2018-12-16 06:43:19"}}
-{ "user": { "login": "Ela", "password": "haslo", "newlogin": "Wieloryb", "newpassword": "woda"}}
-{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "1", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-18 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
-{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "2", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-17 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
-{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "3", "title": "Podwodne zycie zwierzat", "start_timestamp": "2017-11-16 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
-{ "talk": { "login": "Ela", "password": "haslo", "speakerlogin": "Wieloryb", "talk": "4", "title": "Podwodne zycie zwierzat", "start_timestamp": "2018-12-17 06:43:19", "room": "15", "initial_evaluation" : "4" , "eventname": "moze"}}
-{ "register_user_for_event": { "login": "Wieloryb", "password": "woda", "eventname": "moze"}}
-{ "register_user_for_event": { "login": "Ela", "password": "haslo", "eventname": "moze"}}
-{"attendance": {"login": "Wieloryb", "password": "woda", "talk": "2"}}
-{"evaluation": {"login": "Wieloryb", "password": "woda", "talk": "2", "rating": "4"}}
-{"evaluation": {"login": "Wieloryb", "password": "woda", "talk": "2", "rating": "11"}}
-{"reject": {"login": "Ela", "password": "haslo", "talk": "1"}}
-{"proposal": {"login": "Wieloryb", "password": "woda", "talk": "10", "title": "jak zyc", "start_timestamp": "2018-12-17 06:43:19"}}
-{"friends": {"login": "Ela", "password": "haslo", "login2": "Wieloryb"}}
+{ "user_plan": {"login": "Joanne858", "limit": "1"}}
+{ "user_plan": {"login": "Joanne858", "limit": "0"}}
+{ "day_plan" : {"timestamp": "2017-11-11"}}
+{ "day_plan" : {"timestamp": "2017-03-14"}}
+{ "best_talks" : {"start_timestamp": "2016-01-01 00:00:00", "end_timestamp": "2016-12-31 23:59:59","limit": "0", "all": "0" }}
+{ "most_popular_talks" : {"start_timestamp": "2016-01-01 00:00:00", "end_timestamp": "2016-12-31 23:59:59","limit": "0" }}
+{ "attended_talks" : {"login": "Lela62", "password": "ipsum857" }}
+{ "attended_talks" : {"login": "Martin594", "password": "sunt280" }}
+{ "user": { "login": "Donald_Grump11", "password": "admin", "newlogin": "Ela", "newpassword": "ciastko"} }
+{ "attended_talks": {"login": "Ela", "password": "ciastko" }}
+{ "abandoned_talks": {"login": "Stuart100", "password": "dolore003", "number":"20" }}
