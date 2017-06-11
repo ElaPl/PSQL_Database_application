@@ -11,7 +11,6 @@ import java.util.Date;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.postgresql.util.PSQLException;
 
 public class Database implements IDatabase {
 
@@ -24,7 +23,7 @@ public class Database implements IDatabase {
 			Class.forName("org.postgresql.Driver");
 			try {
 				connection = DriverManager.getConnection(url + bd_name, user, password);
-			} catch (PSQLException e) {
+			} catch (Exception e) {
 				return status_error();
 			}
 		} catch (Exception e) {
