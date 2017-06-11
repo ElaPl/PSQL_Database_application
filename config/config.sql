@@ -1,10 +1,3 @@
-DROP TABLE IF EXISTS Person, Event, Friends, Talk, Person_rated_talk, Person_sign_up_talk, Person_sign_up_event,Person_took_part_talk ;
-DROP TYPE IF EXISTS user_plan_type CASCADE ;
-DROP TYPE IF EXISTS lecture_list_type CASCADE ;
-DROP TYPE IF EXISTS lecture_list_with_participants_number_type CASCADE ;
-DROP TYPE IF EXISTS signed_for_event_type CASCADE ;
-DROP TYPE IF EXISTS talk_without_room_type CASCADE ;
-
 CREATE TYPE lecture_list_type AS 
 (talk_id text,
  start_timestamp timestamp,
@@ -35,6 +28,10 @@ CREATE TYPE signed_for_event_type AS
 (event_name text,
  participants int);
 
+CREATE TYPE friends_event_type AS 
+(login text,
+ event text,
+ friendlogin text);
 
 CREATE TABLE IF NOT EXISTS Person (
 	login TEXT PRIMARY KEY, 
@@ -49,8 +46,13 @@ CREATE TABLE IF NOT EXISTS Event (
 );
 
 CREATE TABLE IF NOT EXISTS Friends (
-	loginFrom TEXT NOT NULL REFERENCES Person (login), 
-	loginTo TEXT NOT NULL REFERENCES Person (login)
+	friend1 TEXT NOT NULL REFERENCES Person (login), 
+	friend2 TEXT NOT NULL REFERENCES Person (login)
+);
+
+CREATE TABLE IF NOT EXISTS wantMeet (
+	who TEXT NOT NULL REFERENCES Person (login), 
+	withWho TEXT NOT NULL REFERENCES Person (login)
 );
 
 CREATE TABLE IF NOT EXISTS Talk (	
@@ -68,11 +70,6 @@ CREATE TABLE IF NOT EXISTS Person_rated_talk (
 	login TEXT NOT NULL REFERENCES Person (login), 
 	talk_id TEXT NOT NULL REFERENCES Talk (talk_id) ON DELETE CASCADE,
 	rate INTEGER NOT NULL CHECK(rate >= 0 AND rate <= 10)
-);
-
-CREATE TABLE IF NOT EXISTS Person_sign_up_talk (
-	login TEXT NOT NULL REFERENCES Person (login), 
-	talk_id TEXT NOT NULL REFERENCES Talk (talk_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Person_sign_up_event (
@@ -128,7 +125,7 @@ $BODY$
 	RETURN TRUE;
 END
 $BODY$ LANGUAGE plpgsql;
-	
+
 CREATE OR REPLACE FUNCTION addUser(_login TEXT, _passsword TEXT, _newLogin TEXT, _newPassword TEXT) RETURNS BOOLEAN AS
 $BODY$
 BEGIN 
@@ -229,12 +226,18 @@ BEGIN
 END
 $BODY$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION friends(login1 text, password1 text, login2 TEXT) RETURNS BOOLEAN AS 
+CREATE OR REPLACE FUNCTION addFriend(login1 text, password1 text, login2 TEXT) RETURNS BOOLEAN AS 
 $BODY$
 	BEGIN
-		IF (NOT EXISTS (
-			SELECT * FROM person p WHERE p.login = login1 AND p.user_password = password1)) THEN  raise notice 'not exist'; RETURN FALSE; END IF;
-		INSERT INTO friends(loginfrom, loginto) VALUES (login1, login2);
+		IF ((NOT IsUser(login1, password1) OR login2 NOT IN (select login from person where role = 'u'))) THEN RETURN FALSE; END IF;
+		IF (EXISTS (SELECT friend1, friend2 FROM friends WHERE friend1 = login1 AND friend2 = login2)) THEN RETURN FALSE; END IF;
+		IF (EXISTS (select * from wantMeet where who = login1 and withWho = login2)) THEN RETURN FALSE; END IF;
+		IF (EXISTS (select * from wantMeet where who = login2 AND withWho = login1)) THEN
+			DELETE FROM wantMeet WHERE who = login2 AND withWho = login1;
+			INSERT INTO friends (friend1, friend2) VALUES (login1,login2),(login2,login1);
+		ELSE
+			INSERT INTO wantMeet(who, withWho) VALUES (login1, login2);
+		END IF;
 		RETURN TRUE;	
 	END
 $BODY$ LANGUAGE plpgsql;
@@ -246,20 +249,20 @@ DECLARE
 BEGIN
  IF (_limit = 0) THEN 	
 	RETURN QUERY
-	 SELECT
+	 SELECT DISTINCT
 		p.login, t.talk_id, t.start_timestamp, t.title, t.room
 	 FROM person_sign_up_event p 
 		JOIN talk t USING (event_name)
-	 WHERE p.login=_login AND t.status = 'a'
+	 WHERE p.login=_login AND t.status = 'a' AND t.start_timestamp >= clock_timestamp()
 	 ORDER BY t.start_timestamp ASC
 	 LIMIT ALL;	
  ELSE
 	RETURN QUERY
- 	SELECT 
+ 	SELECT DISTINCT
 		p.login, t.talk_id, t.start_timestamp, t.title, t.room
 	 FROM person_sign_up_event p 
 		JOIN talk t USING (event_name)
-	 WHERE p.login=_login AND t.status = 'a'
+	 WHERE p.login=_login AND t.status = 'a' AND t.start_timestamp >= clock_timestamp()
 	 ORDER BY t.start_timestamp ASC
 	 LIMIT _limit;
  END IF;
@@ -284,15 +287,15 @@ BEGIN
 	IF (_all = 1) THEN
  		CREATE TEMP TABLE IF NOT EXISTS temp_table AS
 		SELECT 
-			t.talk_id, (sum(t.rate)/count(t.login)) as "average"
+			t.talk_id, (sum(t.rate)::float/count(t.login)::float)::float as "average"
 		FROM person_rated_talk t
 		GROUP BY t.talk_id;
 	ELSE 
  		CREATE TEMP TABLE IF NOT EXISTS temp_table AS
 		SELECT 
-			t.talk_id, (sum(t.rate)/count(t.login)) as "average"
+			t.talk_id, (sum(t.rate)::float/count(t.login)::float)::float as "average"
 		FROM person_rated_talk t
-			JOIN person_took_part_talk USING (talk_id)
+			LEFT JOIN person_took_part_talk USING (login, talk_id)
 		GROUP BY t.talk_id;
 	END IF;
 	IF (_limit = 0 ) THEN
@@ -300,14 +303,14 @@ BEGIN
 		SELECT t.talk_id, t.start_timestamp, t.title, t.room
 		FROM temp_table tt
 			JOIN talk t USING (talk_id)
-		WHERE (t.start_timestamp BETWEEN _start_timestamp AND _end_timestamp) AND t.status != 'r'
+		WHERE (t.start_timestamp BETWEEN _start_timestamp AND _end_timestamp) AND t.status = 'a'
 		ORDER BY tt.average DESC;
 	ELSE 
 		RETURN QUERY
 		SELECT t.talk_id, t.start_timestamp, t.title, t.room
 		FROM temp_table tt
 			JOIN talk t USING (talk_id)
-		WHERE t.start_timestamp BETWEEN _start_timestamp AND _end_timestamp AND t.status != 'r'
+		WHERE t.start_timestamp BETWEEN _start_timestamp AND _end_timestamp AND t.status = 'a'
 		ORDER BY tt.average DESC
 		LIMIT _limit;
 	END IF;
@@ -457,4 +460,47 @@ BEGIN
 	END IF;
 END
 $X$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION iSFriend(_login1 text, _login2 text) RETURNS BOOLEAN AS
+$X$
+BEGIN
+	IF (EXISTS(SELECT * FROM friends WHERE loginfrom = _login1 AND loginto = _login2)) THEN RETURN TRUE; END IF;
+	RETURN FALSE; 
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION friends_talks(_login text, _password text, _start_timestamp timestamp, _end_timestamp timestamp, _limit int) RETURNS SETOF user_plan_type AS
+$X$
+BEGIN
+	IF (IsUser(_login, _password)) THEN
+		RETURN QUERY
+		SELECT 
+			t.talk_id, t.speaker_login, t.start_timestamp, t.title, t.room
+		FROM talk t
+			JOIN friends ON (friend2 = speaker_login)
+		WHERE t.status != 'r' AND friend1 = _login AND t.start_timestamp BETWEEN _start_timestamp AND _end_timestamp
+		ORDER BY t.start_timestamp DESC;
+	ELSE 	
+		RAISE EXCEPTION 'Wrong login or password';
+	END IF;
+END
+$X$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION friends_events(_login text, _password text, _event text) RETURNS SETOF friends_event_type AS
+$X$
+BEGIN
+	IF (IsUser(_login, _password)) THEN
+		RETURN QUERY
+		SELECT 
+			f.friend1, _event, f.friend2 as "friendlogin"
+		FROM friends f
+			JOIN person_sign_up_event ON (friend2 = login)
+		WHERE f.friend1 = _login AND event_name = _event;
+	ELSE 	
+		RAISE EXCEPTION 'Wrong login or password';
+	END IF;
+END
+$X$ LANGUAGE plpgsql;
+
+
 

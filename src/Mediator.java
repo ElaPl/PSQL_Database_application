@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,12 +25,7 @@ public class Mediator {
 	Mediator() {
 		MethodMap.put("open", new IDatabaseMethod() {
 			public JSONObject execute(JSONObject jobc) {
-				if (isObjString(jobc.get("baza")) && isObjString(jobc.get("login"))
-						&& isObjString(jobc.get("password"))) {
-					return db.open((String) jobc.get("baza"), (String) jobc.get("login"),
-							(String) jobc.get("password"));
-				}
-				return db.status_not_impemented();
+				return db.open((String) jobc.get("baza"), (String) jobc.get("login"), (String) jobc.get("password"));
 			}
 		});
 
@@ -161,6 +157,19 @@ public class Mediator {
 				return db.proposals((String) jobject.get("login"), (String) jobject.get("password"));
 			}
 		});
+		MethodMap.put("friends_talks", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.friends_talks((String) jobject.get("login"), (String) jobject.get("password"),
+						convertStringToTimestamp((String) jobject.get("start_timestamp")), convertStringToTimestamp((String) jobject.get("end_timestamp")),
+						toInt(jobject.get("limit")));
+			}
+		});
+		MethodMap.put("friends_events", new IDatabaseMethod() {
+			public JSONObject execute(JSONObject jobject) {
+				return db.friends_events((String) jobject.get("login"), (String) jobject.get("password"),
+						(String) jobject.get("eventname"));
+			}
+		});
 	}
 
 	private int toInt(Object obj) {
@@ -171,7 +180,6 @@ public class Mediator {
 			result = toIntExact((Long) obj);
 		}
 		return result;
-		
 	}
 	
 	private Date convertStringToDate(String str_date) {
@@ -210,11 +218,15 @@ public class Mediator {
 
 	public void execute_file(String path) {
 		String line = "";
+		
 		try {
 			FileReader fileReader = new FileReader(path);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			if ((line = bufferedReader.readLine()) != null) {
+				open_database(line);
+			}
 			while ((line = bufferedReader.readLine()) != null) {
-				System.out.println(line);
+				//System.out.println(line);
 				call(line);
 			}
 			bufferedReader.close();
@@ -225,6 +237,37 @@ public class Mediator {
 		}
 	}
 
+	public void open_database(String command) {
+		JSONObject jobject;
+
+		try {
+			jobject = (JSONObject) myparser.parse(command);
+			Set<String> keys = jobject.keySet();
+			for (String key : keys) {
+				final IDatabaseMethod databaseeMethod = MethodMap.get(key);
+				if (databaseeMethod != null) {
+					JSONObject ob = databaseeMethod.execute((JSONObject) jobject.get(key));
+					if ((String) ob.get("status") == "OK") {
+						JSONObject ob2 = db.import_configuration("config/config.sql");
+						print_result(ob2);
+						if ((String) ob2.get("status") != "OK") {
+							System.exit(0);
+						}
+					}else {
+						print_result(db.status_error());
+						System.exit(0);
+					}
+				} else {
+					print_result(db.status_not_impemented());
+					System.exit(0);
+				}
+			}
+
+		} catch (ParseException e) {
+			print_result(db.status_error());
+		}
+	}
+	
 	public void call(String command) {
 		JSONObject jobject;
 
@@ -237,13 +280,11 @@ public class Mediator {
 					print_result(databaseeMethod.execute((JSONObject) jobject.get(key)));
 				} else {
 					print_result(db.status_not_impemented());
-					System.out.println("Mediator: Taka funkcja nie istnieje");
 				}
 			}
 
 		} catch (ParseException e) {
 			print_result(db.status_error());
-			System.out.println("Mediator: Parse error");
 		}
 	}
 

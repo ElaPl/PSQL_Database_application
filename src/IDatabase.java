@@ -34,7 +34,9 @@ public interface IDatabase {
 	JSONObject recently_added_talks(int limit);
 	JSONObject rejected_talks(String login, String password);
 	JSONObject proposals(String login, String password);
-
+	JSONObject friends_talks(String login, String password, Timestamp _start_timestamp, Timestamp _end_timestamp, int _limit);
+	JSONObject friends_events(String login, String password, String event);
+	JSONObject import_configuration(String configPath);
 	
 	// return
 	JSONObject status_not_impemented();
