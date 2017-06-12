@@ -1,13 +1,6 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.logging.Logger;
-import java.util.Date;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,14 +12,17 @@ public class Database implements IDatabase {
 	private String url = "jdbc:postgresql://localhost/";
 
 	public JSONObject open(String bd_name, String user, String password) {
+		System.out.println("Try to open database");
 		try {
 			Class.forName("org.postgresql.Driver");
 			try {
 				connection = DriverManager.getConnection(url + bd_name, user, password);
 			} catch (Exception e) {
+				System.out.println("Error connection");
 				return status_error();
 			}
 		} catch (Exception e) {
+			System.out.println("Error connection");
 			return status_error();
 		}
 		return status_ok();

@@ -14,6 +14,7 @@ import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+
 public class Mediator {
 	private JSONParser myparser = new JSONParser();
 	private IDatabase db = new Database();
@@ -221,6 +222,7 @@ public class Mediator {
 			FileReader fileReader = new FileReader(path);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			if ((line = bufferedReader.readLine()) != null) {
+				System.out.println(line);
 				open_database(line);
 			}
 			while ((line = bufferedReader.readLine()) != null) {
@@ -237,7 +239,7 @@ public class Mediator {
 
 	public void open_database(String command) {
 		JSONObject jobject;
-
+		System.out.println("Proba otwarcia bazy");
 		try {
 			jobject = (JSONObject) myparser.parse(command);
 			Set<String> keys = jobject.keySet();
@@ -252,16 +254,20 @@ public class Mediator {
 							System.exit(0);
 						}
 					}else {
+						System.out.println("NIe mozna otworzyc bazy");
+
 						print_result(db.status_error());
 						System.exit(0);
 					}
 				} else {
+					System.out.println("NIe mozna zaladować pliku");
 					print_result(db.status_not_impemented());
 					System.exit(0);
 				}
 			}
 
 		} catch (ParseException e) {
+			System.out.println("Mediator_open_database");
 			print_result(db.status_error());
 		}
 	}

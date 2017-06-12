@@ -9,3 +9,11 @@ psql -d bd_proj -U ela
 
 login ela
 haslo 123
+
+java -cp bin;lib/json-simple-1.1.1.jar src/Main
+
+sudo java -cp bin:lib/json-simple-1.1.1.jar Main
+
+
+javac -d bin -cp lib/json-simple-1.1.1.jar:lib/postgresql-42.1.1.jre6.jar src/*.java
+java -cp bin:lib/json-simple-1.1.1.jar:lib/postgresql-42.1.1.jre6.jar Main inputs/testP
